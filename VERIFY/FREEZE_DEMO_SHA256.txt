@@ -1,0 +1,10 @@
+STIC — Hash Freeze (SHA256)
+
+demo\stic_integrated_demo_v3_2.py
+SHA256: d075952311b27b0d586cb55bb5d1e7923b6d0c9c1bcaff92608f00bee7b02d81
+
+demo\STIC_HTML_v3_2.html
+SHA256: 8392a12e4cf0d1ff7dd621f7af558ec26f1b88b6330b6989fe078cac76794769
+
+same file -> same hash  
+different file -> different hash

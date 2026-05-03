@@ -628,7 +628,7 @@ It represents a minimal deterministic demonstration of structural correctness re
 
 ### **Architecture and Documentation:**
 
-Licensed under **CC BY-NC 4.0**
+Licensed under CC BY-NC 4.0
 
 ---
 

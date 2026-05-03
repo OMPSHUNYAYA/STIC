@@ -1,0 +1,296 @@
+Open Standard License — STIC Reference Implementation
+
+STIC — Structural Integrity without Cloud (Correctness Without Cloud Dependency)
+Shunyaya Structural Infrastructure Model
+
+Legal Status
+
+This license is a permissive Open Standard license for the STIC reference implementation.
+
+To the maximum extent permitted by applicable law, this license grants rights similar in spirit to permissive open-source licenses, while preserving truthful representation requirements for the STIC name and reference implementation.
+
+If any provision is found unenforceable, the remaining provisions remain in effect.
+
+Nature of Release
+
+This is a minimal, self-contained reference implementation.
+
+It is intended to demonstrate a structural system correctness model — not to represent a full distributed system, cloud architecture, or infrastructure platform.
+
+Behavioral guarantees apply only within the scope of the reference model and its defined structural assumptions.
+
+Permission
+
+Permission is hereby granted, free of charge, to any person or organization to:
+
+• use
+• execute
+• study
+• reproduce
+• publish
+• distribute
+• modify
+• implement
+• extend
+
+the STIC reference implementation, in whole or in part, for commercial or non-commercial use, subject only to the representation and naming conditions defined in this license.
+
+No registration, fees, or approval required.
+
+No Restrictions on Use
+
+This reference implementation imposes no restrictions on usage, except:
+
+• truthful representation
+• non-misleading use of the STIC name
+
+Attribution is not required, but is encouraged for clarity and ecosystem integrity.
+No endorsement or certification is implied.
+No runtime obligations apply.
+
+Separation of License and Structural Truth
+
+This license governs legal usage, distribution, and representation.
+
+It does not govern, alter, or override structural correctness.
+
+Structural correctness is defined independently by:
+
+system_correctness = resolve(structure)
+
+Legal permission does not imply structural validity.
+Structural validity does not depend on legal permission.
+
+Practical Interpretation
+
+This license governs usage and representation.
+
+It does not govern correctness.
+
+Correctness within this model is determined solely by structure:
+
+structure_complete = TRUE AND structure_consistent = TRUE
+
+Licensing governs usage — not correctness.
+
+System correctness is a property of structure — independent of infrastructure, execution, or coordination mechanisms.
+
+Truth is represented by system outcome.
+Proof is represented by certificate.
+
+Structural proof is expressed as:
+
+same structure → same correctness → same certificate
+
+Different structure → different admissibility outcome
+
+Clarification — Infrastructure as Capability
+
+This statement refers specifically to correctness as a property of structure.
+
+The reference implementation may use infrastructure for:
+
+• execution
+• communication
+• coordination
+• scaling
+
+However, such infrastructure is not the source of correctness.
+
+Correctness is determined solely by structural sufficiency.
+
+Key distinction:
+
+Traditional systems: correctness = result of infrastructure
+STIC: correctness = result of resolved structure
+
+Infrastructure may reveal correctness.
+It does not define it.
+
+Representation & Naming
+
+Modified or extended implementations:
+
+• must not be presented as the canonical STIC reference implementation unless structural behavior is preserved
+• must not imply official authorship, certification, or endorsement
+
+Use of the name “STIC” must not imply:
+
+• endorsement
+• certification
+• governance authority
+• official status
+
+Recommended Attribution (Optional)
+
+Preferred form:
+
+Implements STIC — Structural Integrity without Cloud (Shunyaya Structural Model)
+
+Attribution must not imply endorsement.
+
+Scope of the Reference Implementation
+
+This release includes:
+
+• structural system correctness definitions
+• correctness visibility rules
+• minimal executable reference (multi-domain structural validation)
+• outputs and reference traces
+
+STIC defines a deterministic structural model where system correctness emerges from structure:
+
+resolve(structure) →
+
+• CORRECT if structure is complete AND consistent
+• ABSTAIN if structure is incomplete
+• BLOCKED if structure is inconsistent
+
+What This Demonstrates
+
+• system correctness without cloud dependency
+• independence from centralized validation
+• independence from continuous connectivity
+• independence from infrastructure as a correctness requirement
+• structural resolution governing correctness visibility
+• safe handling of incomplete and conflicting structure
+• deterministic and reproducible system states
+• identical structure produces identical correctness and certificate
+
+Conformance
+
+An implementation is considered compatible if it preserves:
+
+• structure-based correctness
+• independence from infrastructure as a requirement for correctness
+• deterministic resolution
+• structure-driven correctness visibility
+• reproducibility of correctness and certificate under equivalent inputs
+• explicit handling of incomplete and conflicting structure
+
+Conformance is judged solely by observable behavior — not by internal implementation.
+
+S1 = S2 → Outcome1 = Outcome2 → Certificate1 = Certificate2
+
+Conflict Handling
+
+In this reference implementation:
+
+• BLOCKED is explicitly defined and demonstrated
+• ABSTAIN corresponds to incomplete structure (no correctness)
+• inconsistent conditions do not produce a visible outcome
+
+Conformance requires:
+
+• no forced correctness under incomplete structure
+• no arbitrary correctness under conflicting structure
+
+Normalization Requirement
+
+For deterministic certificate identity:
+
+normalized_outcome = normalize(Outcome)
+certificate = hash(normalized_outcome)
+
+Normalization ensures:
+• independence from infrastructure state
+• independence from representation format
+• consistent certificate identity across systems and runs
+
+In the reference implementation:
+SHA-256 (truncated) is used for demonstration.
+
+Dependency Independence Guarantee
+
+Correctness is invariant under dependency state:
+
+resolve(S, D1) = resolve(S, D2) for all dependency states D1, D2
+
+This ensures:
+
+dependency_failure != correctness_failure
+
+Correctness depends only on structure — not infrastructure state.
+
+Relationship to Shunyaya Framework
+
+STIC is part of the broader Shunyaya framework.
+
+It builds on:
+
+• SLANG → correctness without execution
+• ORL → correctness without ordering
+• STIME → correctness without time
+• STINT → correctness without connectivity
+• STILE → correctness without communication
+• SVARE → correctness without computation
+• STIC → correctness without cloud dependency
+
+Each removes a dependency.
+Correctness remains preserved by structure.
+
+Architecture License
+
+The conceptual architecture and documentation are licensed under:
+
+Creative Commons Attribution-NonCommercial 4.0 (CC BY-NC 4.0)
+
+Permitted:
+
+• research
+• academic use
+• study and reproduction
+• non-commercial distribution
+
+Commercial use of architecture text is not permitted under this license.
+
+Full license:
+https://creativecommons.org/licenses/by-nc/4.0/
+
+Responsibility
+
+Use of STIC in real-world systems is entirely at the user’s own responsibility.
+
+This reference implementation provides:
+
+• deterministic structural correctness with reproducible outcomes and certificates
+• correctness derived from structure
+• safe handling of incomplete and conflicting structure
+
+It does not provide:
+
+• infrastructure guarantees
+• distributed system guarantees
+• performance guarantees
+• real-time guarantees
+• safety-critical assurances
+• regulatory or compliance guarantees
+
+No Warranty
+
+THE STIC REFERENCE IMPLEMENTATION IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND.
+
+THIS INCLUDES, BUT IS NOT LIMITED TO:
+
+• MERCHANTABILITY
+• FITNESS FOR A PARTICULAR PURPOSE
+• NON-INFRINGEMENT
+
+IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM USE OF THIS IMPLEMENTATION.
+
+Closing Statement
+
+STIC explores a simple but fundamental idea:
+
+System correctness emerges deterministically from structure — without requiring cloud infrastructure, centralized validation, or execution environments as a prerequisite.
+
+Infrastructure may enable systems to run.
+It does not determine whether they are correct.
+
+It is released to encourage:
+
+• independent validation
+• real-world testing
+• safe experimentation
+
+STIC is offered as a minimal, verifiable reference implementation of that possibility.

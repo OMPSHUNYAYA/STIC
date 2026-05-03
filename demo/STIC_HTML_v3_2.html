@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STIC — Correctness Without Cloud</title>
+
+<style>
+:root{
+  --bg:#07111f;
+  --panel:#0d1b2e;
+  --panel2:#0b1628;
+  --line:rgba(255,255,255,0.12);
+  --text:#edf4ff;
+  --muted:#b9c7df;
+  --good:#7ee787;
+  --warn:#ffd166;
+  --bad:#ff7b72;
+  --blue:#7aa2ff;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(122,162,255,0.18), transparent 30%),
+    radial-gradient(circle at 90% 0%, rgba(126,231,135,0.12), transparent 28%),
+    linear-gradient(180deg,#07111f,#0b1628);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+.wrap{
+  max-width:1160px;
+  margin:auto;
+  padding:20px;
+}
+
+.hero{
+  background:linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.035));
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:22px;
+  margin-bottom:16px;
+  box-shadow:0 24px 70px rgba(0,0,0,0.28);
+}
+
+h1{
+  margin:0 0 10px;
+  font-size:clamp(2rem,5vw,3.5rem);
+  letter-spacing:-0.05em;
+  line-height:1.02;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:1rem;
+  line-height:1.55;
+  max-width:850px;
+}
+
+.card{
+  background:rgba(13,27,46,0.92);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 18px 50px rgba(0,0,0,0.20);
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+button{
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#12233a;
+  color:white;
+  cursor:pointer;
+  font-weight:800;
+}
+
+button.active{
+  background:linear-gradient(135deg,var(--blue),#69f0c8);
+  color:#06111f;
+  border-color:transparent;
+}
+
+button.danger.active{
+  background:linear-gradient(135deg,#ff7b72,#ffd166);
+  color:#06111f;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.two-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.mini{
+  background:#0b1628;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  min-height:80px;
+}
+
+.k{
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  font-weight:900;
+}
+
+.v{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-weight:800;
+  word-break:break-word;
+}
+
+.good{color:var(--good)}
+.warn{color:var(--warn)}
+.bad{color:var(--bad)}
+.blue{color:var(--blue)}
+
+.note{
+  color:var(--muted);
+  line-height:1.55;
+  font-size:0.92rem;
+}
+
+.big-state{
+  font-size:clamp(1.4rem,3vw,2rem);
+}
+
+.compare-label{
+  font-weight:950;
+  font-size:1.1rem;
+  margin-bottom:10px;
+}
+
+.console{
+  background:#06111f;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  min-height:210px;
+}
+
+pre{
+  margin:0;
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color:#eaf4ff;
+  line-height:1.5;
+  font-size:0.88rem;
+}
+
+.footer{
+  text-align:center;
+  color:var(--muted);
+  padding:16px 6px 28px;
+  line-height:1.6;
+}
+
+@media(max-width:850px){
+  .grid,
+  .two-grid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<section class="hero">
+  <h1>STIC — Correctness Without Cloud</h1>
+  <div class="subtitle">
+    Structural Integrity without Cloud. This demo shows the key distinction:
+    dependencies may affect availability, but correctness is resolved from structure.
+  </div>
+</section>
+
+<div class="card">
+  <div class="k">Core Principle</div>
+  <div class="v">system_correctness = resolve(structure)</div>
+  <div class="v">correctness_visible iff structure_complete AND structure_consistent</div>
+</div>
+
+<div class="card">
+  <div class="k">Structure Inputs</div>
+  <div class="row">
+    <button id="msg" class="active">Message: VALID</button>
+    <button id="id" class="active">Identity: VALID</button>
+    <button id="path" class="active">Path: VALID</button>
+    <button id="conflict" class="danger">Conflict: FALSE</button>
+  </div>
+  <p class="note">
+    Structure inputs determine STIC correctness. Missing structure becomes ABSTAIN.
+    Conflicting structure becomes BLOCKED.
+  </p>
+</div>
+
+<div class="card">
+  <div class="k">Dependencies — Toggle ON/OFF</div>
+  <div class="row">
+    <button id="cloud" class="active">Cloud ON</button>
+    <button id="network" class="active">Network ON</button>
+    <button id="execution" class="active">Execution ON</button>
+  </div>
+  <p class="note">
+    Dependency toggles affect the traditional comparison path.
+    STIC correctness remains invariant because its certificate depends only on structure.
+  </p>
+</div>
+
+<div class="two-grid">
+
+  <div class="card">
+    <div class="compare-label">STIC Resolution</div>
+    <div class="grid">
+      <div class="mini">
+        <div class="k">State</div>
+        <div id="state" class="v big-state">—</div>
+      </div>
+
+      <div class="mini">
+        <div class="k">Correctness Visible</div>
+        <div id="visible" class="v big-state">—</div>
+      </div>
+
+      <div class="mini">
+        <div class="k">Certificate</div>
+        <div id="cert" class="v">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="compare-label">Traditional Dependency-Based View</div>
+    <div class="grid">
+      <div class="mini">
+        <div class="k">Traditional State</div>
+        <div id="tradState" class="v big-state">—</div>
+      </div>
+
+      <div class="mini">
+        <div class="k">Reason</div>
+        <div id="tradReason" class="v">—</div>
+      </div>
+
+      <div class="mini">
+        <div class="k">Dependency Impact</div>
+        <div id="dependencyImpact" class="v">—</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="card">
+  <div class="k">Structural Insight</div>
+  <div class="grid">
+    <div class="mini">
+      <div class="k">Correctness</div>
+      <div class="v good">Property of structure</div>
+    </div>
+    <div class="mini">
+      <div class="k">Availability</div>
+      <div class="v warn">Property of infrastructure</div>
+    </div>
+    <div class="mini">
+      <div class="k">Invariant</div>
+      <div class="v blue">Same structure → same correctness</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="k">Resolution Output</div>
+  <div class="console">
+    <pre id="terminal"></pre>
+  </div>
+</div>
+
+<div class="footer">
+  STIC does not remove infrastructure. It separates capability from correctness.<br>
+  Use infrastructure for capability. Use structure for correctness.<br><br>
+  Research architecture and reference demonstration only. Not a production infrastructure system.<br>
+  Part of the Shunyaya Framework.
+</div>
+
+<script>
+// ---------------- STRUCTURE ----------------
+
+let structure = {
+  message: true,
+  identity: true,
+  path: true,
+  conflict: false
+};
+
+// ---------------- DEPENDENCIES ----------------
+
+let deps = {
+  cloud: true,
+  network: true,
+  execution: true
+};
+
+// ---------------- HELPERS ----------------
+
+function labelBool(value, yesText, noText) {
+  return value ? yesText : noText;
+}
+
+function setButtonText(id, text) {
+  document.getElementById(id).innerText = text;
+}
+
+function setClass(id, baseClass, state) {
+  const el = document.getElementById(id);
+  el.className = baseClass + " " + state;
+}
+
+// ---------------- TOGGLE HANDLERS ----------------
+
+function toggle(id, obj, key, onText, offText) {
+  document.getElementById(id).onclick = () => {
+    obj[key] = !obj[key];
+    document.getElementById(id).classList.toggle("active", obj[key]);
+    setButtonText(id, obj[key] ? onText : offText);
+    update();
+  };
+}
+
+toggle("cloud", deps, "cloud", "Cloud ON", "Cloud OFF");
+toggle("network", deps, "network", "Network ON", "Network OFF");
+toggle("execution", deps, "execution", "Execution ON", "Execution OFF");
+
+toggle("msg", structure, "message", "Message: VALID", "Message: MISSING");
+toggle("id", structure, "identity", "Identity: VALID", "Identity: MISSING");
+toggle("path", structure, "path", "Path: VALID", "Path: MISSING");
+
+document.getElementById("conflict").onclick = () => {
+  structure.conflict = !structure.conflict;
+  document.getElementById("conflict").classList.toggle("active", structure.conflict);
+  setButtonText("conflict", structure.conflict ? "Conflict: TRUE" : "Conflict: FALSE");
+  update();
+};
+
+// ---------------- STIC RESOLUTION ----------------
+
+function resolveSTIC() {
+  if (structure.conflict) {
+    return {
+      state: "BLOCKED",
+      visible: false,
+      reason: "conflicting structure detected"
+    };
+  }
+
+  if (!structure.message || !structure.identity || !structure.path) {
+    return {
+      state: "ABSTAIN",
+      visible: false,
+      reason: "structure incomplete"
+    };
+  }
+
+  return {
+    state: "CORRECT",
+    visible: true,
+    reason: "structure complete and consistent"
+  };
+}
+
+// ---------------- TRADITIONAL VIEW ----------------
+
+function resolveTraditional() {
+  if (!deps.cloud) {
+    return ["UNAVAILABLE", "Cloud OFF"];
+  }
+
+  if (!deps.network) {
+    return ["UNAVAILABLE", "Network OFF"];
+  }
+
+  if (!deps.execution) {
+    return ["UNAVAILABLE", "Execution OFF"];
+  }
+
+  if (structure.conflict) {
+    return ["INCONSISTENT", "Conflict present"];
+  }
+
+  if (!structure.message || !structure.identity || !structure.path) {
+    return ["INCOMPLETE", "Missing structure"];
+  }
+
+  return ["VALID", "All dependencies available"];
+}
+
+// ---------------- CERTIFICATE ----------------
+
+function hash(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (h << 5) - h + str.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h).toString(16).padStart(12, "0").slice(0, 12);
+}
+
+function normalizedStructure() {
+  return JSON.stringify({
+    conflict: structure.conflict,
+    identity: structure.identity,
+    message: structure.message,
+    path: structure.path
+  });
+}
+
+// ---------------- UPDATE ----------------
+
+function update() {
+  const stic = resolveSTIC();
+  const traditionalResult = resolveTraditional();
+  const tradState = traditionalResult[0];
+  const tradReason = traditionalResult[1];
+
+  document.getElementById("state").innerText = stic.state;
+  document.getElementById("visible").innerText = stic.visible ? "TRUE" : "FALSE";
+
+  if (stic.state === "CORRECT") {
+    setClass("state", "v big-state", "good");
+    setClass("visible", "v big-state", "good");
+  } else if (stic.state === "ABSTAIN") {
+    setClass("state", "v big-state", "warn");
+    setClass("visible", "v big-state", "warn");
+  } else {
+    setClass("state", "v big-state", "bad");
+    setClass("visible", "v big-state", "bad");
+  }
+
+  const cert = hash(normalizedStructure());
+  document.getElementById("cert").innerText = cert;
+
+  document.getElementById("tradState").innerText = tradState;
+  document.getElementById("tradReason").innerText = tradReason;
+
+  if (tradState === "VALID") {
+    setClass("tradState", "v big-state", "good");
+  } else if (tradState === "UNAVAILABLE" || tradState === "INCOMPLETE") {
+    setClass("tradState", "v big-state", "warn");
+  } else {
+    setClass("tradState", "v big-state", "bad");
+  }
+
+  const anyDependencyOff = !deps.cloud || !deps.network || !deps.execution;
+  document.getElementById("dependencyImpact").innerText =
+    anyDependencyOff ? "Traditional path affected" : "No dependency failure";
+
+  document.getElementById("terminal").innerText =
+`STIC — Structural Integrity without Cloud
+
+Structure:
+  message  : ${labelBool(structure.message, "VALID", "MISSING")}
+  identity : ${labelBool(structure.identity, "VALID", "MISSING")}
+  path     : ${labelBool(structure.path, "VALID", "MISSING")}
+  conflict : ${structure.conflict ? "TRUE" : "FALSE"}
+
+Dependencies:
+  cloud     : ${deps.cloud ? "ON" : "OFF"}
+  network   : ${deps.network ? "ON" : "OFF"}
+  execution : ${deps.execution ? "ON" : "OFF"}
+
+STIC Resolution:
+  state     : ${stic.state}
+  visible   : ${stic.visible ? "TRUE" : "FALSE"}
+  reason    : ${stic.reason}
+  sigma     : ${cert}
+
+Traditional Dependency-Based View:
+  state     : ${tradState}
+  reason    : ${tradReason}
+
+Core Insight:
+  Correctness is resolved from structure.
+  Availability is affected by infrastructure.
+  Same structure -> same correctness -> same certificate.`;
+}
+
+update();
+</script>
+
+</body>
+</html>

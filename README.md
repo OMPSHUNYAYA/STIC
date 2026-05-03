@@ -407,7 +407,7 @@ Canonical identity is a future extension.
 
 ### **Framework**
 
-- [STIC Framework Document](docs/STIC_v.1.3.pdf)  
+- [STIC Framework Document](docs/STIC_v1.3.pdf)  
 - [STIC Architecture Notes](docs/STIC-Architecture-Notes.md)  
 - [Dependency Elimination Framework](docs/Dependency-Elimination-Framework.png)  
 - [Shunyaya Structural Stack](docs/Shunyaya-Structural-Stack.png)  
